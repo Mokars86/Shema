@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Lock, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { Globe2, Lock, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import {
+  SHEMA_DUBAI_DISPLAY,
+  SHEMA_EMAIL,
+  SHEMA_WHATSAPP_DISPLAY,
+} from '../utils/whatsapp';
 
 export const Footer: React.FC = () => {
   return (
@@ -9,49 +14,60 @@ export const Footer: React.FC = () => {
         {/* Brand */}
         <div className="space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-linear-to-br from-blue-600 to-emerald-500 flex items-center justify-center font-display font-extrabold text-white">
-              S
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="Shema Electronics & Digital Services"
+              className="w-11 h-11 rounded-full object-cover shadow-sm border border-amber-400/40"
+            />
             <div>
               <div className="font-display font-bold text-white text-base">
-                Shema Electronic &amp; Digital
+                Shema Electronics &amp; Digital
               </div>
-              <div className="text-xs text-slate-400">Online Service Hub</div>
+              <div className="text-xs text-slate-400">Your Tech, Our Priority</div>
             </div>
           </div>
           <p className="text-xs leading-relaxed text-slate-400">
-            Bridging authentic consumer electronics with fast, transparent government and digital portal assistance across Ghana.
+            Independent Digital Services Assistance Provider for Tanzania government online platforms, paired with quality smartphones and electronics available locally and on order from Dubai, UAE.
           </p>
           <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">
             <ShieldCheck className="w-4 h-4" />
-            <span>256-Bit Encrypted Document Portal</span>
+            <span>Transparent Govt &amp; Service Fees</span>
           </div>
         </div>
 
         {/* Electronics */}
         <div>
           <h4 className="font-display font-bold text-white text-sm mb-4">
-            Electronics Store
+            Electronics &amp; Tech Products
           </h4>
           <ul className="space-y-2.5 text-xs">
             <li>
               <Link to="/electronics?cat=Smartphones" className="hover:text-white">
-                Smartphones &amp; Tablets
+                Smartphones (iPhone, Pixel, Samsung, Xiaomi…)
               </Link>
             </li>
             <li>
-              <Link to="/electronics?cat=TVs+%26+Audio" className="hover:text-white">
-                4K Smart TVs &amp; Audio
+              <Link
+                to="/electronics?cat=Mobile+Phone+Accessories"
+                className="hover:text-white"
+              >
+                Mobile Phone Accessories
               </Link>
             </li>
             <li>
-              <Link to="/electronics?cat=Home+Appliances" className="hover:text-white">
-                Home Appliances &amp; Fridges
+              <Link
+                to="/electronics?cat=Smart+Gadgets+%26+Wearables"
+                className="hover:text-white"
+              >
+                Smart Gadgets &amp; Wearables
               </Link>
             </li>
             <li>
-              <Link to="/electronics?cat=Laptops+%26+Accessories" className="hover:text-white">
-                Laptops &amp; Power Stations
+              <Link
+                to="/electronics?cat=Computers+%26+Electronics"
+                className="hover:text-white"
+              >
+                Computers &amp; Electronics
               </Link>
             </li>
           </ul>
@@ -60,22 +76,30 @@ export const Footer: React.FC = () => {
         {/* Digital Services */}
         <div>
           <h4 className="font-display font-bold text-white text-sm mb-4">
-            Government &amp; Digital Services
+            Online &amp; Digital Services
           </h4>
           <ul className="space-y-2.5 text-xs">
             <li>
-              <Link to="/digital-services?cat=Passport" className="hover:text-white">
-                Passport Applications &amp; Renewals
+              <Link to="/digital-services?cat=RITA+Services" className="hover:text-white">
+                RITA (eRITA) &amp; NIDA Services
               </Link>
             </li>
             <li>
-              <Link to="/digital-services?cat=Permits+%26+Licenses" className="hover:text-white">
-                Ghana Card &amp; DVLA Assistance
+              <Link to="/digital-services?cat=TRA+Services" className="hover:text-white">
+                TRA Taxpayer Portal &amp; TIN
               </Link>
             </li>
             <li>
-              <Link to="/digital-services?cat=Tax+%26+Business" className="hover:text-white">
-                RGD Business &amp; GRA TIN Filing
+              <Link to="/digital-services?cat=BRELA+Services" className="hover:text-white">
+                BRELA BOS &amp; ORS Registration
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/digital-services?cat=Immigration+Services"
+                className="hover:text-white"
+              >
+                Tanzania e-Immigration Passport
               </Link>
             </li>
             <li>
@@ -89,43 +113,50 @@ export const Footer: React.FC = () => {
         {/* Contact & Payments */}
         <div className="space-y-3 text-xs">
           <h4 className="font-display font-bold text-white text-sm mb-4">
-            Customer Support
+            Tanzania &amp; Dubai Desk
           </h4>
           <div className="flex items-start gap-2">
             <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-            <span>42 Liberation Road, Airport Residential, Accra</span>
+            <span>Dar es Salaam, Tanzania (Local Dispatch &amp; Pickup)</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Globe2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <span>Dubai, UAE Sourcing Hub ({SHEMA_DUBAI_DISPLAY})</span>
           </div>
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>+233 30 274 8890</span>
+            <span>{SHEMA_WHATSAPP_DISPLAY}</span>
           </div>
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-blue-400 shrink-0" />
-            <span>support@shemaservice.gh</span>
+            <span>{SHEMA_EMAIL}</span>
           </div>
 
-          <div className="pt-3">
+          <div className="pt-2">
             <div className="text-[11px] text-slate-400 mb-2 flex items-center gap-1">
-              <Lock className="w-3 h-3" /> Accepted Payment Gateways
+              <Lock className="w-3 h-3" /> Accepted Payment Methods
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {['MTN MoMo', 'Telecel Cash', 'AirtelTigo', 'Visa', 'Mastercard'].map(
-                (badge) => (
-                  <span
-                    key={badge}
-                    className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] font-semibold text-slate-300"
-                  >
-                    {badge}
-                  </span>
-                )
-              )}
+              {['M-Pesa', 'Tigo Pesa', 'Airtel Money', 'Bank / Visa'].map((badge) => (
+                <span
+                  key={badge}
+                  className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] font-semibold text-slate-300"
+                >
+                  {badge}
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-slate-900 py-5 px-4 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Shema Electronics &amp; Digital Online Service. All rights reserved.
+      <div className="border-t border-slate-900 py-5 px-4 text-center text-[11px] text-slate-500 max-w-6xl mx-auto space-y-1.5">
+        <p>
+          Disclaimer: Shema Electronics &amp; Digital Services is an independent digital assistance provider. All official registrations, certificates, identification numbers, and approvals are issued or determined solely by the respective government authorities (RITA, NIDA, TRA, BRELA, Immigration).
+        </p>
+        <p>
+          © {new Date().getFullYear()} Shema Electronics &amp; Digital Services. All rights reserved.
+        </p>
       </div>
     </footer>
   );

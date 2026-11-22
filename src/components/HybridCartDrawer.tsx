@@ -20,7 +20,7 @@ export const HybridCartDrawer: React.FC = () => {
     setIsCartOpen,
     removeFromCart,
     updateProductQty,
-    cartTotalGHS,
+    cartTotalTZS,
     formatPrice,
   } = useApp();
   const navigate = useNavigate();
@@ -160,7 +160,7 @@ export const HybridCartDrawer: React.FC = () => {
                                 </button>
                               </div>
                               <span className="text-sm font-bold text-slate-900">
-                                {formatPrice(item.product.priceGHS * item.quantity)}
+                                {formatPrice(item.product.priceTZS * item.quantity)}
                               </span>
                             </div>
                           </div>
@@ -182,7 +182,7 @@ export const HybridCartDrawer: React.FC = () => {
                     {serviceItems.map((item) => {
                       if (item.type !== 'service') return null;
                       const total =
-                        item.service.serviceFeeGHS + item.service.govtFeeGHS;
+                        item.service.serviceFeeTZS + item.service.govtFeeTZS;
                       return (
                         <div
                           key={item.cartItemId}
@@ -239,12 +239,12 @@ export const HybridCartDrawer: React.FC = () => {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-slate-600">Unified Subtotal</span>
               <span className="font-display font-extrabold text-xl text-slate-900">
-                {formatPrice(cartTotalGHS)}
+                {formatPrice(cartTotalTZS)}
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Supports MTN MoMo, Telecel Cash, AirtelTigo &amp; Visa/Mastercard</span>
+              <span>Supports M-Pesa, Tigo Pesa, Airtel Money &amp; Visa/Mastercard</span>
             </div>
             <button
               onClick={handleCheckout}

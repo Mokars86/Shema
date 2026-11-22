@@ -1,8 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, Heart, Scale, ShoppingBag, Star } from 'lucide-react';
+import {
+  Eye,
+  Globe2,
+  Heart,
+  MapPin,
+  MessageCircle,
+  Scale,
+  ShoppingBag,
+  Star,
+} from 'lucide-react';
 import type { Product } from '../types';
 import { useApp } from '../context/AppContext';
+import {
+  buildProductWhatsAppMessage,
+  buildWhatsAppUrl,
+} from '../utils/whatsapp';
 
 interface ProductCardProps {
   product: Product;
@@ -19,19 +32,54 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     wishlist,
     toggleWishlist,
     setQuickViewProduct,
+    openProductRequestModal,
     compareIds,
     toggleCompare,
   } = useApp();
 
   const isWishlisted = wishlist.includes(product.id);
   const isCompared = compareIds.includes(product.id);
-  const discountPct = product.originalPriceGHS
+  const isLocal = product.availability === 'local_tanzania';
+  const discountPct = product.originalPriceTZS
     ? Math.round(
-        ((product.originalPriceGHS - product.priceGHS) /
-          product.originalPriceGHS) *
+        ((product.originalPriceTZS - product.priceTZS) /
+          product.originalPriceTZS) *
           100
       )
     : 0;
+
+  const whatsappOrderUrl = buildWhatsAppUrl(
+    buildProductWhatsAppMessage({
+      action: 'order',
+      productName: product.name,
+      brand: product.brand,
+      availability: product.availability,
+      color: product.colors[0]?.name,
+      storage: product.storageOptions?.[0],
+    })
+  );
+
+  const AvailabilityBadge = (
+    <span
+      className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+        isLocal
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+          : 'bg-blue-50 text-blue-700 border border-blue-200'
+      }`}
+    >
+      {isLocal ? (
+        <>
+          <MapPin className="w-2.5 h-2.5" />
+          In Tanzania
+        </>
+      ) : (
+        <>
+          <Globe2 className="w-2.5 h-2.5" />
+          On Order (Dubai)
+        </>
+      )}
+    </span>
+  );
 
   if (viewMode === 'list') {
     return (
@@ -54,19 +102,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-xs font-semibold text-blue-600">
                 {product.brand} · {product.category}
               </span>
-              <span
-                className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                  product.inStock
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-rose-50 text-rose-600'
-                }`}
-              >
-                {product.inStock ? `In Stock (${product.stockCount})` : 'Out of Stock'}
-              </span>
+              {AvailabilityBadge}
             </div>
             <Link to={`/electronics/${product.id}`}>
               <h3 className="font-display font-bold text-lg text-slate-900 mt-1 hover:text-blue-600">
@@ -76,11 +116,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <p className="text-xs text-slate-600 mt-1 line-clamp-2">
               {product.shortDescription}
             </p>
-            <div className="flex items-center gap-1.5 mt-2 text-xs text-amber-600 font-semibold">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{product.rating}</span>
-              <span className="text-slate-400 font-normal">
-                ({product.reviewCount} reviews)
+            <div className="flex items-center gap-2 mt-2 text-xs">
+              <span className="inline-flex items-center gap-1 text-amber-600 font-semibold">
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                {product.rating}
+              </span>
+              <span className="text-slate-400">({product.reviewCount} reviews)</span>
+              <span className="text-slate-400">·</span>
+              <span className="text-[11px] text-slate-500">
+                Price confirmed before order
               </span>
             </div>
           </div>
@@ -88,16 +132,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-slate-100">
             <div>
               <div className="font-display font-extrabold text-xl text-slate-900">
-                {formatPrice(product.priceGHS)}
+                {formatPrice(product.priceTZS)}
               </div>
-              {product.originalPriceGHS && (
+              {product.originalPriceTZS && (
                 <div className="text-xs text-slate-400 line-through">
-                  {formatPrice(product.originalPriceGHS)}
+                  {formatPrice(product.originalPriceTZS)}
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => toggleCompare(product.id)}
                 className={`p-2 rounded-xl border text-xs font-semibold cursor-pointer ${
@@ -117,6 +161,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <Eye className="w-4 h-4" />
               </button>
               <button
+                onClick={() =>
+                  openProductRequestModal({ product, mode: 'price' })
+                }
+                className="px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer"
+              >
+                Request Price
+              </button>
+              <a
+                href={whatsappOrderUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold inline-flex items-center gap-1.5"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
+              <button
                 disabled={!product.inStock}
                 onClick={() =>
                   addProductToCart(
@@ -126,10 +187,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     product.storageOptions?.[0]
                   )
                 }
-                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 disabled:bg-slate-300 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 disabled:bg-slate-300 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
-                <span>{product.inStock ? 'Add to Cart' : 'Restocking'}</span>
+                <span>{product.inStock ? 'Add to Cart' : 'Sold Out'}</span>
               </button>
             </div>
           </div>
@@ -153,15 +214,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {discountPct > 0 && (
-            <span className="px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold shadow-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-bold shadow-xs w-fit">
               -{discountPct}%
             </span>
           )}
-          {product.badge && (
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-900/85 backdrop-blur-xs text-white text-[10px] font-semibold">
-              {product.badge}
-            </span>
-          )}
+          <span
+            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs backdrop-blur-xs w-fit ${
+              isLocal
+                ? 'bg-emerald-600/90 text-white'
+                : 'bg-blue-600/90 text-white'
+            }`}
+          >
+            {isLocal ? 'Available in Tanzania' : 'On Order · Dubai'}
+          </span>
         </div>
 
         {/* Action Overlay Buttons */}
@@ -202,13 +267,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between gap-2 text-[11px]">
-            <span className="font-semibold text-blue-600">{product.brand}</span>
-            <span
-              className={`font-semibold ${
-                product.inStock ? 'text-emerald-600' : 'text-rose-500'
-              }`}
-            >
-              {product.inStock ? 'In Stock' : 'Out of Stock'}
+            <span className="font-semibold text-blue-600 truncate">
+              {product.brand} · {product.subCategory}
             </span>
           </div>
 
@@ -218,40 +278,64 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </h3>
           </Link>
 
-          <div className="flex items-center gap-1 mt-1.5 text-xs">
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            <span className="font-semibold text-slate-800">{product.rating}</span>
-            <span className="text-slate-400">({product.reviewCount})</span>
+          <div className="flex items-center justify-between gap-2 mt-1.5 text-xs">
+            <div className="flex items-center gap-1">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span className="font-semibold text-slate-800">{product.rating}</span>
+              <span className="text-slate-400">({product.reviewCount})</span>
+            </div>
+            <span className="text-[10px] text-slate-500">
+              {isLocal ? 'Local Stock' : 'Dubai Order'}
+            </span>
           </div>
         </div>
 
-        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-          <div>
-            <div className="font-display font-extrabold text-base sm:text-lg text-slate-900">
-              {formatPrice(product.priceGHS)}
-            </div>
-            {product.originalPriceGHS && (
-              <div className="text-[11px] text-slate-400 line-through">
-                {formatPrice(product.originalPriceGHS)}
+        <div className="mt-4 pt-3 border-t border-slate-100 space-y-2.5">
+          <div className="flex items-baseline justify-between gap-2">
+            <div>
+              <div className="font-display font-extrabold text-base sm:text-lg text-slate-900">
+                {formatPrice(product.priceTZS)}
               </div>
-            )}
+              {product.originalPriceTZS && (
+                <div className="text-[11px] text-slate-400 line-through">
+                  {formatPrice(product.originalPriceTZS)}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => openProductRequestModal({ product, mode: 'price' })}
+              className="text-[11px] font-semibold text-blue-600 hover:underline cursor-pointer"
+            >
+              Request Price
+            </button>
           </div>
 
-          <button
-            disabled={!product.inStock}
-            onClick={() =>
-              addProductToCart(
-                product,
-                1,
-                product.colors[0]?.name || 'Standard',
-                product.storageOptions?.[0]
-              )
-            }
-            className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-blue-600 disabled:bg-slate-200 disabled:text-slate-400 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>{product.inStock ? 'Add' : 'Sold Out'}</span>
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={whatsappOrderUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>WhatsApp</span>
+            </a>
+            <button
+              disabled={!product.inStock}
+              onClick={() =>
+                addProductToCart(
+                  product,
+                  1,
+                  product.colors[0]?.name || 'Standard',
+                  product.storageOptions?.[0]
+                )
+              }
+              className="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-blue-600 disabled:bg-slate-200 disabled:text-slate-400 text-white text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>{product.inStock ? 'Add' : 'Sold Out'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

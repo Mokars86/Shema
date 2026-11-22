@@ -153,7 +153,7 @@ export const TrackPage: React.FC = () => {
                   {matchedOrder.id} · Ordered {matchedOrder.date}
                 </div>
                 <h2 className="font-display font-bold text-xl text-slate-900">
-                  Electronics Delivery ({formatPrice(matchedOrder.totalGHS)})
+                  Electronics Delivery ({formatPrice(matchedOrder.totalTZS)})
                 </h2>
               </div>
             </div>

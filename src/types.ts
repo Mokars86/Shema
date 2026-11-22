@@ -1,4 +1,12 @@
-export type Currency = 'GHS' | 'USD';
+export type Currency = 'TZS' | 'USD';
+
+export type ProductCategory =
+  | 'Smartphones'
+  | 'Mobile Phone Accessories'
+  | 'Smart Gadgets & Wearables'
+  | 'Computers & Electronics';
+
+export type AvailabilityType = 'local_tanzania' | 'dubai_order';
 
 export interface ProductVariant {
   name: string;
@@ -18,9 +26,12 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  category: 'Smartphones' | 'TVs & Audio' | 'Home Appliances' | 'Laptops & Accessories';
-  priceGHS: number;
-  originalPriceGHS?: number;
+  category: ProductCategory;
+  subCategory: string;
+  availability: AvailabilityType;
+  priceTZS: number;
+  originalPriceTZS?: number;
+  priceOnRequest?: boolean;
   rating: number;
   reviewCount: number;
   inStock: boolean;
@@ -37,10 +48,12 @@ export interface Product {
 }
 
 export type ServiceCategory =
-  | 'Passport'
-  | 'Permits & Licenses'
-  | 'Tax & Business'
-  | 'Utility Assistance';
+  | 'RITA Services'
+  | 'NIDA Services'
+  | 'TRA Services'
+  | 'BRELA Services'
+  | 'Immigration Services'
+  | 'Other Business & Digital Services';
 
 export interface ServiceDocumentReq {
   id: string;
@@ -53,8 +66,13 @@ export interface DigitalService {
   id: string;
   title: string;
   category: ServiceCategory;
-  serviceFeeGHS: number;
-  govtFeeGHS: number;
+  subGroup?: string;
+  officialPortalName?: string;
+  officialPortalUrl?: string;
+  officialPortalUrls?: { label: string; url: string }[];
+  serviceFeeTZS: number;
+  govtFeeTZS: number;
+  govtFeeNote?: string;
   processingTime: string;
   badge?: string;
   shortDescription: string;
@@ -75,11 +93,14 @@ export interface UploadedDoc {
 
 export interface ServiceApplicationPayload {
   fullName: string;
-  ghanaCardNumber: string;
+  nidaNumber: string;
   phone: string;
   email: string;
   dateOfBirth: string;
-  deliveryMethod: 'Digital Delivery (Email/Portal)' | 'Office Pickup (Accra Central)' | 'Courier Dispatch';
+  deliveryMethod:
+    | 'Digital Delivery (Email/WhatsApp)'
+    | 'Dar es Salaam Office Pickup'
+    | 'Courier Dispatch (Tanzania)';
   notes?: string;
   documents: UploadedDoc[];
 }
@@ -101,14 +122,18 @@ export type CartItem =
     };
 
 export type OrderStatus = 'Confirmed' | 'Packed' | 'In Transit' | 'Delivered';
-export type ServiceRequestStatus = 'Submitted' | 'Under Review' | 'Processing' | 'Completed';
+export type ServiceRequestStatus =
+  | 'Submitted'
+  | 'Under Review'
+  | 'Processing'
+  | 'Completed';
 
 export interface ElectronicsOrder {
   id: string;
   date: string;
   status: OrderStatus;
   paymentMethod: string;
-  totalGHS: number;
+  totalTZS: number;
   shippingAddress: string;
   estimatedDelivery: string;
   items: {
@@ -117,7 +142,7 @@ export interface ElectronicsOrder {
     image: string;
     variant: string;
     quantity: number;
-    priceGHS: number;
+    priceTZS: number;
   }[];
 }
 
@@ -138,10 +163,10 @@ export interface ServiceRequestRecord {
   submittedDate: string;
   estimatedCompletion: string;
   status: ServiceRequestStatus;
-  totalPaidGHS: number;
+  totalPaidTZS: number;
   paymentMethod: string;
   applicantName: string;
-  ghanaCardNumber: string;
+  nidaNumber: string;
   documents: UploadedDoc[];
   messages: AdminMessage[];
   finalDocumentUrl?: string;
@@ -180,4 +205,12 @@ export interface VideoClip {
   linkedId: string;
   linkedLabel: string;
   comments: ClipComment[];
+}
+
+export interface ProductRequestModalState {
+  isOpen: boolean;
+  product?: Product | null;
+  mode?: 'request' | 'price';
+  preselectedColor?: string;
+  preselectedStorage?: string;
 }

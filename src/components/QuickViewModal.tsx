@@ -70,13 +70,19 @@ export const QuickViewModal: React.FC = () => {
 
             <div className="mt-4 flex items-baseline gap-2.5">
               <span className="font-display font-extrabold text-2xl text-slate-900">
-                {formatPrice(quickViewProduct.priceGHS)}
+                {formatPrice(quickViewProduct.priceTZS)}
               </span>
-              {quickViewProduct.originalPriceGHS && (
+              {quickViewProduct.originalPriceTZS && (
                 <span className="text-sm text-slate-400 line-through">
-                  {formatPrice(quickViewProduct.originalPriceGHS)}
+                  {formatPrice(quickViewProduct.originalPriceTZS)}
                 </span>
               )}
+            </div>
+            <div className="mt-1.5 text-[11px] font-semibold text-slate-600">
+              {quickViewProduct.availability === 'local_tanzania'
+                ? '• Available Locally in Tanzania'
+                : '• Available on Order (Sourced from Dubai, UAE)'}{' '}
+              · Price confirmed before order
             </div>
 
             {/* Color Selection */}

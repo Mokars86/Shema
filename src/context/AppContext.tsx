@@ -11,6 +11,7 @@ import type {
   DigitalService,
   ElectronicsOrder,
   Product,
+  ProductRequestModalState,
   SavedAddress,
   ServiceApplicationPayload,
   ServiceRequestRecord,
@@ -21,14 +22,14 @@ interface UserProfile {
   name: string;
   email: string;
   phone: string;
-  ghanaCard: string;
+  nidaNumber: string;
   loggedIn: boolean;
 }
 
 interface AppContextType {
   currency: Currency;
   setCurrency: (c: Currency) => void;
-  formatPrice: (amountGHS: number) => string;
+  formatPrice: (amountTZS: number) => string;
 
   cart: CartItem[];
   addProductToCart: (
@@ -46,7 +47,7 @@ interface AppContextType {
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
-  cartTotalGHS: number;
+  cartTotalTZS: number;
   cartElectronicsCount: number;
   cartServicesCount: number;
 
@@ -55,6 +56,15 @@ interface AppContextType {
 
   quickViewProduct: Product | null;
   setQuickViewProduct: (p: Product | null) => void;
+
+  productRequestModal: ProductRequestModalState;
+  openProductRequestModal: (opts?: {
+    product?: Product | null;
+    mode?: 'request' | 'price';
+    preselectedColor?: string;
+    preselectedStorage?: string;
+  }) => void;
+  closeProductRequestModal: () => void;
 
   compareIds: string[];
   toggleCompare: (productId: string) => void;
@@ -94,15 +104,24 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const USD_RATE = 15.2;
+const USD_RATE = 2650;
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currency, setCurrency] = useState<Currency>('GHS');
+  const [currency, setCurrency] = useState<Currency>('TZS');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const [wishlist, setWishlist] = useState<string[]>(['samsung-s24-ultra', 'lg-oled-65-c4']);
+  const [wishlist, setWishlist] = useState<string[]>([
+    'apple-iphone-16-pro-max',
+    'samsung-s24-ultra',
+  ]);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [productRequestModal, setProductRequestModal] =
+    useState<ProductRequestModalState>({
+      isOpen: false,
+      product: null,
+      mode: 'request',
+    });
 
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
@@ -114,16 +133,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [addresses, setAddresses] = useState<SavedAddress[]>(INITIAL_ADDRESSES);
 
   const [user, setUser] = useState<UserProfile>({
-    name: 'Kofi Asante',
-    email: 'kofi.asante@shemacustomer.gh',
-    phone: '+233 24 555 0192',
-    ghanaCard: 'GHA-728491023-4',
+    name: 'Amani Juma',
+    email: 'amani.juma@shemacustomer.tz',
+    phone: '+255 755 000 192',
+    nidaNumber: '19940615-14102-00001-24',
     loggedIn: true,
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const [toast, setToast] = useState<string | null>(null);
   const [clips, setClips] = useState<VideoClip[]>(INITIAL_CLIPS);
+
+  const openProductRequestModal = (opts?: {
+    product?: Product | null;
+    mode?: 'request' | 'price';
+    preselectedColor?: string;
+    preselectedStorage?: string;
+  }) => {
+    setProductRequestModal({
+      isOpen: true,
+      product: opts?.product ?? null,
+      mode: opts?.mode ?? 'request',
+      preselectedColor: opts?.preselectedColor,
+      preselectedStorage: opts?.preselectedStorage,
+    });
+  };
+
+  const closeProductRequestModal = () => {
+    setProductRequestModal({ isOpen: false, product: null, mode: 'request' });
+  };
 
   const registerClipView = (clipId: string) => {
     setClips((prev) =>
@@ -199,12 +237,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }, 3200);
   };
 
-  const formatPrice = (amountGHS: number) => {
-    if (currency === 'GHS') {
-      return `₵${amountGHS.toLocaleString('en-GH', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  const formatPrice = (amountTZS: number) => {
+    if (currency === 'TZS') {
+      return `TZS ${amountTZS.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })}`;
     }
-    const usd = amountGHS / USD_RATE;
-    return `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const usd = amountTZS / USD_RATE;
+    return `$${usd.toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`;
   };
 
   const addProductToCart = (
@@ -286,11 +330,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const cartServicesCount = cart.filter((i) => i.type === 'service').length;
 
-  const cartTotalGHS = cart.reduce((sum, item) => {
+  const cartTotalTZS = cart.reduce((sum, item) => {
     if (item.type === 'product') {
-      return sum + item.product.priceGHS * item.quantity;
+      return sum + item.product.priceTZS * item.quantity;
     }
-    return sum + item.service.serviceFeeGHS + item.service.govtFeeGHS;
+    return sum + item.service.serviceFeeTZS + item.service.govtFeeTZS;
   }, 0);
 
   const toggleWishlist = (productId: string) => {
@@ -337,7 +381,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (productItems.length > 0) {
       newOrderId = `SHM-ORD-${Math.floor(1000 + Math.random() * 9000)}`;
       const total = productItems.reduce(
-        (sum, i) => sum + i.product.priceGHS * i.quantity,
+        (sum, i) => sum + i.product.priceTZS * i.quantity,
         0
       );
       const newOrder: ElectronicsOrder = {
@@ -345,16 +389,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         date: new Date().toISOString().split('T')[0],
         status: 'Confirmed',
         paymentMethod,
-        totalGHS: total,
+        totalTZS: total,
         shippingAddress,
-        estimatedDelivery: 'Within 24–48 Hours',
+        estimatedDelivery: 'Confirmed via WhatsApp / 1–7 Days',
         items: productItems.map((i) => ({
           productId: i.product.id,
           name: i.product.name,
           image: i.product.images[0],
           variant: [i.selectedColor, i.selectedStorage].filter(Boolean).join(' · '),
           quantity: i.quantity,
-          priceGHS: i.product.priceGHS,
+          priceTZS: i.product.priceTZS,
         })),
       };
       setOrders((prev) => [newOrder, ...prev]);
@@ -373,17 +417,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           submittedDate: new Date().toISOString().split('T')[0],
           estimatedCompletion: s.service.processingTime,
           status: 'Submitted',
-          totalPaidGHS: s.service.serviceFeeGHS + s.service.govtFeeGHS,
+          totalPaidTZS: s.service.serviceFeeTZS + s.service.govtFeeTZS,
           paymentMethod,
           applicantName: s.application.fullName,
-          ghanaCardNumber: s.application.ghanaCardNumber,
+          nidaNumber: s.application.nidaNumber,
           documents: s.application.documents,
           messages: [
             {
               id: `sys-${Date.now()}`,
               sender: 'admin',
               senderName: 'Shema Digital Desk',
-              text: `Application received for ${s.service.title}. Our specialist is reviewing your uploaded documents now.`,
+              text: `Application assistance request received for ${s.service.title}. Our specialist is reviewing your documents and preparing your portal submission.`,
               timestamp: 'Just now',
             },
           ],
@@ -421,7 +465,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       })
     );
 
-    // Simulated specialist auto-reply
     setTimeout(() => {
       setServiceRequests((prev) =>
         prev.map((req) => {
@@ -433,10 +476,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               {
                 id: `a-${Date.now()}`,
                 sender: 'admin',
-                senderName: 'Ama (Shema Specialist)',
+                senderName: 'Shema Digital Desk',
                 text: attachmentName
-                  ? `Thanks! We received your updated file (${attachmentName}) and attached it to ${trackingId}.`
-                  : `Message received on ${trackingId}. Our desk has noted this and will update your status shortly.`,
+                  ? `Asante! We received your updated file (${attachmentName}) and attached it to ${trackingId}.`
+                  : `Message received on ${trackingId}. Our specialist has noted this and will update your status shortly.`,
                 timestamp: 'Just now',
               },
             ],
@@ -481,13 +524,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearCart,
         isCartOpen,
         setIsCartOpen,
-        cartTotalGHS,
+        cartTotalTZS,
         cartElectronicsCount,
         cartServicesCount,
         wishlist,
         toggleWishlist,
         quickViewProduct,
         setQuickViewProduct,
+        productRequestModal,
+        openProductRequestModal,
+        closeProductRequestModal,
         compareIds,
         toggleCompare,
         clearCompare,

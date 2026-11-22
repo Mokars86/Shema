@@ -3,7 +3,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Check,
+  Globe2,
   Heart,
+  MapPin,
+  MessageCircle,
+  PackageSearch,
   ShieldCheck,
   ShoppingBag,
   Star,
@@ -13,11 +17,21 @@ import {
 } from 'lucide-react';
 import { PRODUCTS } from '../data/mockData';
 import { useApp } from '../context/AppContext';
+import {
+  buildProductWhatsAppMessage,
+  buildWhatsAppUrl,
+} from '../utils/whatsapp';
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { formatPrice, addProductToCart, wishlist, toggleWishlist } = useApp();
+  const {
+    formatPrice,
+    addProductToCart,
+    wishlist,
+    toggleWishlist,
+    openProductRequestModal,
+  } = useApp();
 
   const product = PRODUCTS.find((p) => p.id === id) || PRODUCTS[0];
 
@@ -149,22 +163,35 @@ export const ProductDetailPage: React.FC = () => {
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
             <div className="flex items-baseline gap-3">
               <span className="font-display font-extrabold text-3xl text-slate-900">
-                {formatPrice(product.priceGHS)}
+                {formatPrice(product.priceTZS)}
               </span>
-              {product.originalPriceGHS && (
+              {product.originalPriceTZS && (
                 <span className="text-base text-slate-400 line-through">
-                  {formatPrice(product.originalPriceGHS)}
+                  {formatPrice(product.originalPriceTZS)}
                 </span>
               )}
             </div>
             <div className="mt-3 space-y-1.5 text-xs text-slate-600">
+              <div className="flex items-center gap-2 font-semibold text-slate-800">
+                {product.availability === 'local_tanzania' ? (
+                  <>
+                    <MapPin className="w-4 h-4 text-emerald-600" />
+                    <span>Available Locally in Tanzania</span>
+                  </>
+                ) : (
+                  <>
+                    <Globe2 className="w-4 h-4 text-blue-600" />
+                    <span>Ordered for You in Dubai, UAE → Delivered to Tanzania</span>
+                  </>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-blue-600" />
                 <span>{product.deliveryEstimate}</span>
               </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>{product.warranty}</span>
+                <span>{product.warranty} · Prices &amp; availability confirmed before order</span>
               </div>
             </div>
           </div>
@@ -254,7 +281,43 @@ export const ProductDetailPage: React.FC = () => {
               className="flex-1 py-3.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 cursor-pointer"
             >
               <Zap className="w-4 h-4" />
-              <span>Buy Now via Secure Checkout</span>
+              <span>Checkout</span>
+            </button>
+          </div>
+
+          {/* WhatsApp Order & Price / Spec Request */}
+          <div className="grid sm:grid-cols-2 gap-3">
+            <a
+              href={buildWhatsAppUrl(
+                buildProductWhatsAppMessage({
+                  action: 'order',
+                  productName: product.name,
+                  brand: product.brand,
+                  availability: product.availability,
+                  color: selectedColor,
+                  storage: selectedStorage,
+                })
+              )}
+              target="_blank"
+              rel="noreferrer"
+              className="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>Order via WhatsApp</span>
+            </a>
+            <button
+              onClick={() =>
+                openProductRequestModal({
+                  product,
+                  mode: 'price',
+                  preselectedColor: selectedColor,
+                  preselectedStorage: selectedStorage,
+                })
+              }
+              className="py-3 px-4 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <PackageSearch className="w-4 h-4 text-blue-600" />
+              <span>Request Price / Custom Specs</span>
             </button>
           </div>
         </div>

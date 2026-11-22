@@ -39,21 +39,21 @@ export const ContactPage: React.FC = () => {
             {
               icon: MessageCircle,
               title: 'WhatsApp Quick Desk',
-              detail: '+233 24 555 0192',
-              sub: 'Instant document pre-checks',
+              detail: '+255 755 000 192',
+              sub: 'Price confirmation, Dubai orders & document checks',
               color: 'bg-emerald-50 text-emerald-600',
             },
             {
               icon: MapPin,
-              title: 'Accra Flagship Hub',
-              detail: '42 Liberation Road, Airport Residential',
-              sub: 'Pickup & Biometric Consultation',
+              title: 'Tanzania & Dubai Operations',
+              detail: 'Dar es Salaam, Tanzania · Dubai, UAE',
+              sub: 'Local Dispatch & International Sourcing',
               color: 'bg-slate-100 text-slate-700',
             },
             {
               icon: Mail,
               title: 'Email Support',
-              detail: 'support@shemaservice.gh',
+              detail: 'support@shemadigital.co.tz',
               sub: 'Replies within 2 business hours',
               color: 'bg-amber-50 text-amber-600',
             },
@@ -115,9 +115,10 @@ export const ContactPage: React.FC = () => {
             onChange={(e) => setForm({ ...form, topic: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-blue-600"
           >
-            <option>Digital Service Inquiry (Passport / Ghana Card / RGD)</option>
+            <option>Digital Service Inquiry (RITA / NIDA / TRA / BRELA / Immigration)</option>
+            <option>Product Request / Dubai Sourcing &amp; Price Confirmation</option>
             <option>Electronics Order &amp; Warranty Support</option>
-            <option>Corporate / Bulk Procurement</option>
+            <option>Business Support &amp; Document Services</option>
           </select>
 
           <textarea

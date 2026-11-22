@@ -42,12 +42,12 @@ export const ServiceDetailPage: React.FC = () => {
   // Step 1: Personal Details
   const [form, setForm] = useState({
     fullName: user.name,
-    ghanaCardNumber: user.ghanaCard,
+    nidaNumber: user.nidaNumber,
     phone: user.phone,
     email: user.email,
     dateOfBirth: '1994-06-15',
     deliveryMethod:
-      'Digital Delivery (Email/Portal)' as ServiceApplicationPayload['deliveryMethod'],
+      'Digital Delivery (Email/WhatsApp)' as ServiceApplicationPayload['deliveryMethod'],
     notes: '',
   });
 
@@ -59,11 +59,11 @@ export const ServiceDetailPage: React.FC = () => {
 
   // Step 4: Instant Payment
   const [paymentMethod, setPaymentMethod] = useState<
-    'MTN Mobile Money' | 'Telecel Cash' | 'Visa / Mastercard'
-  >('MTN Mobile Money');
+    'M-Pesa Tanzania' | 'Tigo Pesa / Airtel Money' | 'Visa / Mastercard'
+  >('M-Pesa Tanzania');
   const [momoNumber, setMomoNumber] = useState(user.phone);
 
-  const totalFee = service.serviceFeeGHS + service.govtFeeGHS;
+  const totalFee = service.serviceFeeTZS + service.govtFeeTZS;
 
   const handleFileChange = (
     reqId: string,
@@ -229,14 +229,22 @@ export const ServiceDetailPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 w-full lg:w-auto sm:min-w-[240px] shrink-0">
-          <div className="text-xs text-slate-500">Total Service Fee</div>
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 w-full lg:w-auto sm:min-w-[260px] shrink-0">
+          <div className="text-xs text-slate-500">Total (Govt + Shema Fee)</div>
           <div className="font-display font-extrabold text-2xl text-slate-900 mt-0.5">
             {formatPrice(totalFee)}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
-            Govt: {formatPrice(service.govtFeeGHS)} · Processing:{' '}
-            {formatPrice(service.serviceFeeGHS)}
+          <div className="text-[11px] text-slate-600 mt-1 space-y-0.5">
+            <div>
+              Official Govt Fee:{' '}
+              <span className="font-semibold">
+                {service.govtFeeTZS === 0 ? 'None / As Assessed' : formatPrice(service.govtFeeTZS)}
+              </span>
+            </div>
+            <div>
+              Shema Service Charge:{' '}
+              <span className="font-semibold">{formatPrice(service.serviceFeeTZS)}</span>
+            </div>
           </div>
           <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
             <Clock className="w-4 h-4" />
@@ -369,13 +377,13 @@ export const ServiceDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Ghana Card / National ID Number
+                    NIDA / National ID Number (NIN)
                   </label>
                   <input
                     type="text"
-                    value={form.ghanaCardNumber}
+                    value={form.nidaNumber}
                     onChange={(e) =>
-                      setForm({ ...form, ghanaCardNumber: e.target.value })
+                      setForm({ ...form, nidaNumber: e.target.value })
                     }
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600"
                   />
@@ -430,13 +438,15 @@ export const ServiceDetailPage: React.FC = () => {
                     }
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:border-emerald-600"
                   >
-                    <option value="Digital Delivery (Email/Portal)">
-                      Digital Delivery (Email/Portal)
+                    <option value="Digital Delivery (Email/WhatsApp)">
+                      Digital Delivery (Email/WhatsApp)
                     </option>
-                    <option value="Office Pickup (Accra Central)">
-                      Office Pickup (Accra Central)
+                    <option value="Dar es Salaam Office Pickup">
+                      Dar es Salaam Office Pickup
                     </option>
-                    <option value="Courier Dispatch">Courier Dispatch</option>
+                    <option value="Courier Dispatch (Tanzania)">
+                      Courier Dispatch (Tanzania)
+                    </option>
                   </select>
                 </div>
               </div>
@@ -456,7 +466,7 @@ export const ServiceDetailPage: React.FC = () => {
               <div className="flex justify-end">
                 <button
                   onClick={() => setStep(2)}
-                  disabled={!form.fullName || !form.ghanaCardNumber || !form.phone}
+                  disabled={!form.fullName || !form.nidaNumber || !form.phone}
                   className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white text-sm font-bold inline-flex items-center gap-2 cursor-pointer"
                 >
                   <span>Continue to Document Upload</span>
@@ -588,9 +598,9 @@ export const ServiceDetailPage: React.FC = () => {
                   <span className="font-semibold text-slate-900">{form.fullName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Ghana Card ID</span>
+                  <span className="text-slate-500">NIDA / National ID</span>
                   <span className="font-semibold text-slate-900">
-                    {form.ghanaCardNumber}
+                    {form.nidaNumber}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -663,8 +673,8 @@ export const ServiceDetailPage: React.FC = () => {
               <div className="grid sm:grid-cols-3 gap-3">
                 {(
                   [
-                    'MTN Mobile Money',
-                    'Telecel Cash',
+                    'M-Pesa Tanzania',
+                    'Tigo Pesa / Airtel Money',
                     'Visa / Mastercard',
                   ] as const
                 ).map((method) => (

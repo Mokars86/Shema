@@ -70,14 +70,14 @@ export const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
             <a
-              href="tel:+233302748890"
+              href="tel:+255755000192"
               className="inline-flex items-center gap-1 hover:text-white transition-colors"
             >
               <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />
-              <span>+233 30 274 8890</span>
+              <span>+255 755 000 192</span>
             </a>
             <a
-              href="https://wa.me/233245550192"
+              href="https://wa.me/255755000192"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
@@ -87,24 +87,24 @@ export const Navbar: React.FC = () => {
             </a>
             <span className="hidden md:inline-flex items-center gap-1.5 text-slate-400">
               <Clock className="w-3.5 h-3.5" />
-              <span>Mon–Sat: 8:00 AM – 7:00 PM GMT</span>
+              <span>Mon–Sat: 8:00 AM – 7:00 PM EAT</span>
             </span>
           </div>
 
           <div className="flex items-center gap-3 ml-auto">
             <span className="hidden sm:inline text-slate-400">
-              Authentic Tech &amp; Verified Govt Portals
+              Tanzania Digital Assistance &amp; Dubai Tech Sourcing
             </span>
             <div className="flex items-center bg-slate-800 rounded-md p-0.5">
               <button
-                onClick={() => setCurrency('GHS')}
+                onClick={() => setCurrency('TZS')}
                 className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-colors cursor-pointer ${
-                  currency === 'GHS'
+                  currency === 'TZS'
                     ? 'bg-blue-600 text-white'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                GHS ₵
+                TZS
               </button>
               <button
                 onClick={() => setCurrency('USD')}
@@ -126,19 +126,17 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-600 via-indigo-600 to-emerald-500 p-0.5 shadow-sm group-hover:shadow-md transition-shadow">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <span className="font-display font-extrabold text-lg bg-linear-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-                  S
-                </span>
-              </div>
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="Shema Electronics & Digital Services"
+              className="w-11 h-11 rounded-full object-cover shadow-sm border border-amber-400/50 group-hover:scale-105 transition-transform"
+            />
             <div className="leading-tight">
               <div className="font-display font-extrabold text-base sm:text-lg text-slate-900 tracking-tight">
                 Shema
               </div>
               <div className="text-[10px] sm:text-[11px] font-medium text-slate-500">
-                Electronic &amp; Digital Online Service
+                Electronics &amp; Digital Services
               </div>
             </div>
           </Link>
@@ -203,7 +201,7 @@ export const Navbar: React.FC = () => {
                               </div>
                             </div>
                             <span className="text-sm font-bold text-slate-900 shrink-0">
-                              {formatPrice(p.priceGHS)}
+                              {formatPrice(p.priceTZS)}
                             </span>
                           </button>
                         ))}
@@ -333,11 +331,11 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-              Same-Day Accra Delivery
+              Tanzania &amp; Dubai Sourcing
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              MoMo &amp; Card Accepted
+              M-Pesa · Tigo Pesa · WhatsApp
             </span>
           </div>
         </nav>
@@ -378,7 +376,7 @@ export const Navbar: React.FC = () => {
                   >
                     <span className="font-semibold text-slate-900 truncate">{p.name}</span>
                     <span className="font-bold text-blue-600 shrink-0">
-                      {formatPrice(p.priceGHS)}
+                      {formatPrice(p.priceTZS)}
                     </span>
                   </button>
                 ))}

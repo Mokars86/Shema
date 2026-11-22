@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { MessageCircle, Send, X, ShieldCheck, ExternalLink } from 'lucide-react';
 
+import { buildWhatsAppUrl } from '../utils/whatsapp';
+
 export const WhatsAppWidget: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
     {
       sender: 'agent',
-      text: 'Akwaaba to Shema Support! Need help with a passport application, Ghana Card update, or electronics order? Ask us anything.',
+      text: 'Karibu Shema Electronics & Digital Services! Need help with RITA, NIDA, TRA, BRELA, e-Immigration, or ordering smartphones from Tanzania or Dubai? Ask us anything.',
       time: 'Online now',
     },
   ]);
@@ -19,13 +21,13 @@ export const WhatsAppWidget: React.FC = () => {
     ]);
     setTimeout(() => {
       let reply =
-        'Our specialist is reviewing your question! For immediate document checks, you can also tap "Continue on WhatsApp" below.';
+        'Our specialist is reviewing your question! Tap "Continue on Official WhatsApp" below to confirm prices, availability, or share documents securely.';
       if (prompt.toLowerCase().includes('passport')) {
         reply =
-          'For Standard Passport Assistance (5–7 working days), you only need a Birth Certificate scan, Ghana Card, and a white-background photo. Total fee is ₵780 (Govt + Processing).';
-      } else if (prompt.toLowerCase().includes('delivery')) {
+          'For Tanzania e-Immigration Passport Assistance, you need your verified eRITA Birth Certificate, NIDA NIN, and supporting documents. Official government fees & Shema service charges are displayed separately.';
+      } else if (prompt.toLowerCase().includes('dubai') || prompt.toLowerCase().includes('delivery')) {
         reply =
-          'Orders placed before 2:00 PM in Accra & Tema qualify for same-day delivery. Nationwide courier takes 1–2 working days.';
+          'Local Tanzania stock dispatches same-day in Dar es Salaam (1–3 days nationwide). Dubai-sourced smartphones & electronics arrive in 4–7 business days. Prices & availability are confirmed before your order is finalised.';
       }
       setMessages((prev) => [
         ...prev,
@@ -102,10 +104,10 @@ export const WhatsAppWidget: React.FC = () => {
                 Passport requirements?
               </button>
               <button
-                onClick={() => sendQuickPrompt('How fast is electronics delivery?')}
+                onClick={() => sendQuickPrompt('How does Dubai sourcing work?')}
                 className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-medium hover:bg-blue-100 cursor-pointer"
               >
-                Electronics delivery?
+                Dubai sourcing &amp; delivery?
               </button>
             </div>
           </div>
@@ -128,7 +130,7 @@ export const WhatsAppWidget: React.FC = () => {
           </form>
 
           <a
-            href="https://wa.me/233245550192"
+            href={buildWhatsAppUrl('Hello Shema Electronics & Digital Services, I would like assistance.')}
             target="_blank"
             rel="noreferrer"
             className="px-4 py-2.5 bg-slate-900 text-white text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-slate-800"

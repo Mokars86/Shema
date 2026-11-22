@@ -52,13 +52,13 @@ export const HomePage: React.FC = () => {
             <div className="relative z-10">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold mb-3 sm:mb-4">
                 <Cpu className="w-3.5 h-3.5" />
-                Shema Electronics Store
+                Electronics &amp; Technology Products
               </span>
               <h1 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight">
-                Upgrade Your Home &amp; Tech
+                Tanzania&apos;s Tech Store · Sourced in Dubai
               </h1>
               <p className="text-slate-300 text-sm sm:text-base mt-3 max-w-md">
-                100% genuine smartphones, 4K OLED TVs, inverter appliances &amp; backup power stations with official warranty and same-day Accra delivery.
+                A Tanzanian business sourcing phones, laptops &amp; gadgets from Dubai. Order your device and we procure it for you in Dubai before delivering it to you in Tanzania.
               </p>
             </div>
 
@@ -67,7 +67,7 @@ export const HomePage: React.FC = () => {
                 to="/electronics"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all"
               >
-                <span>Shop Electronics</span>
+                <span>Browse Electronics</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
@@ -78,9 +78,9 @@ export const HomePage: React.FC = () => {
                   className="w-12 h-12 rounded-xl object-cover"
                 />
                 <div className="text-xs">
-                  <div className="text-blue-300 font-semibold">Hot Deal · -8%</div>
-                  <div className="font-bold text-white">Galaxy S24 Ultra</div>
-                  <div className="text-slate-300">{formatPrice(PRODUCTS[0].priceGHS)}</div>
+                  <div className="text-blue-300 font-semibold">Dubai Sourcing</div>
+                  <div className="font-bold text-white">{PRODUCTS[0].name}</div>
+                  <div className="text-slate-300">{formatPrice(PRODUCTS[0].priceTZS)}</div>
                 </div>
               </div>
             </div>
@@ -92,13 +92,13 @@ export const HomePage: React.FC = () => {
             <div className="relative z-10">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold mb-3 sm:mb-4">
                 <FileCheck2 className="w-3.5 h-3.5" />
-                Digital &amp; Government Portal
+                Online &amp; Digital Services · Tanzania
               </span>
               <h2 className="font-display font-extrabold text-2xl sm:text-4xl leading-tight tracking-tight">
-                Fast-Track Your Passport &amp; Government Portals Online
+                Guided Assistance for Tanzania Government Online Portals
               </h2>
               <p className="text-emerald-100/85 text-sm sm:text-base mt-3 max-w-md">
-                Skip the long queues. Upload your documents securely, let our specialists audit your forms, and track every milestone live.
+                Independent digital assistance for RITA, NIDA, TRA, BRELA, and e-Immigration applications, plus business &amp; document support.
               </p>
             </div>
 
@@ -107,17 +107,17 @@ export const HomePage: React.FC = () => {
                 to="/digital-services"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/25 transition-all"
               >
-                <span>Request Digital Service</span>
+                <span>Explore Digital Services</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
               <div className="flex flex-col gap-1.5 text-xs bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-4 py-3">
                 <div className="flex items-center gap-1.5 text-emerald-300 font-semibold">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>99.4% First-Time Approval</span>
+                  <span>Govt &amp; Service Fees Shown Separately</span>
                 </div>
                 <div className="text-slate-200">
-                  Passport · Ghana Card · RGD · GRA TIN
+                  eRITA · NIDA · TRA · BRELA · e-Immigration
                 </div>
               </div>
             </div>
@@ -133,10 +133,10 @@ export const HomePage: React.FC = () => {
             <div className="flex items-center justify-between mb-5">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                  Pillar 01 · Hardware Retail
+                  Division 01 · Hardware &amp; Dubai Sourcing
                 </span>
                 <h3 className="font-display font-bold text-xl text-slate-900 mt-0.5">
-                  Electronics &amp; Home Appliances
+                  Electronics &amp; Technology Products
                 </h3>
               </div>
               <Link
@@ -149,10 +149,22 @@ export const HomePage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { label: '4K Smart TVs', cat: 'TVs & Audio', icon: Tv },
                 { label: 'Smartphones', cat: 'Smartphones', icon: Smartphone },
-                { label: 'Home Appliances', cat: 'Home Appliances', icon: Zap },
-                { label: 'Laptops & Power', cat: 'Laptops & Accessories', icon: Laptop },
+                {
+                  label: 'Mobile Accessories',
+                  cat: 'Mobile Phone Accessories',
+                  icon: Zap,
+                },
+                {
+                  label: 'Smart Gadgets & Wearables',
+                  cat: 'Smart Gadgets & Wearables',
+                  icon: Tv,
+                },
+                {
+                  label: 'Computers & Electronics',
+                  cat: 'Computers & Electronics',
+                  icon: Laptop,
+                },
               ].map((item) => (
                 <Link
                   key={item.label}
@@ -175,10 +187,10 @@ export const HomePage: React.FC = () => {
             <div className="flex items-center justify-between mb-5">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-                  Pillar 02 · Civic &amp; Online Concierge
+                  Division 02 · Tanzania Portals &amp; Support
                 </span>
                 <h3 className="font-display font-bold text-xl text-slate-900 mt-0.5">
-                  Government &amp; Digital Services
+                  Online &amp; Digital Services
                 </h3>
               </div>
               <Link
@@ -192,23 +204,23 @@ export const HomePage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 {
-                  label: 'Passport Application',
-                  cat: 'Passport',
-                  icon: FileBadge2,
-                },
-                {
-                  label: 'National ID Assistance',
-                  cat: 'Permits & Licenses',
+                  label: 'RITA & NIDA Services',
+                  cat: 'RITA Services',
                   icon: ShieldCheck,
                 },
                 {
-                  label: 'Tax & Business Reg.',
-                  cat: 'Tax & Business',
+                  label: 'TRA & BRELA Services',
+                  cat: 'BRELA Services',
                   icon: Building2,
                 },
                 {
-                  label: 'Utility Bill Services',
-                  cat: 'Utility Assistance',
+                  label: 'e-Immigration Passport',
+                  cat: 'Immigration Services',
+                  icon: FileBadge2,
+                },
+                {
+                  label: 'Business & Document Support',
+                  cat: 'Other Business & Digital Services',
                   icon: Sparkles,
                 },
               ].map((item) => (
@@ -347,7 +359,10 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {DIGITAL_SERVICES.slice(0, 6).map((srv) => (
+          {[...DIGITAL_SERVICES]
+            .sort((a, b) => b.popularity - a.popularity)
+            .slice(0, 6)
+            .map((srv) => (
             <div
               key={srv.id}
               className="bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all p-6 flex flex-col justify-between"
@@ -385,9 +400,9 @@ export const HomePage: React.FC = () => {
 
               <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
-                  <div className="text-[11px] text-slate-500">Total Fee (incl. Govt)</div>
+                  <div className="text-[11px] text-slate-500">Total (Govt + Shema)</div>
                   <div className="font-display font-extrabold text-lg text-slate-900">
-                    {formatPrice(srv.serviceFeeGHS + srv.govtFeeGHS)}
+                    {formatPrice(srv.serviceFeeTZS + srv.govtFeeTZS)}
                   </div>
                 </div>
 

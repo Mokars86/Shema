@@ -67,7 +67,7 @@ export const CompareModal: React.FC = () => {
                         {p.name}
                       </div>
                       <div className="text-base font-extrabold text-blue-600 mt-1">
-                        {formatPrice(p.priceGHS)}
+                        {formatPrice(p.priceTZS)}
                       </div>
                     </div>
                   </th>

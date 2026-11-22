@@ -55,8 +55,8 @@ export const AccountPage: React.FC = () => {
     recipient: user.name,
     phone: user.phone,
     street: '',
-    city: 'Accra',
-    region: 'Greater Accra',
+    city: 'Dar es Salaam',
+    region: 'Dar es Salaam',
     isDefault: false,
   });
 
@@ -120,7 +120,7 @@ export const AccountPage: React.FC = () => {
               {user.name}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500">
-              {user.email} · Ghana Card: {user.ghanaCard}
+              {user.email} · NIDA NIN: {user.nidaNumber}
             </p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export const AccountPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="font-bold text-sm text-slate-900">
-                      {formatPrice(item.priceGHS * item.quantity)}
+                      {formatPrice(item.priceTZS * item.quantity)}
                     </div>
                   </div>
                 ))}
@@ -226,7 +226,7 @@ export const AccountPage: React.FC = () => {
               <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
                 <span>Ship to: {order.shippingAddress}</span>
                 <span className="font-bold text-slate-900 text-sm">
-                  Total: {formatPrice(order.totalGHS)}
+                  Total: {formatPrice(order.totalTZS)}
                 </span>
               </div>
             </div>
@@ -531,12 +531,12 @@ export const AccountPage: React.FC = () => {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Ghana Card PIN
+                  NIDA / National ID Number (NIN)
                 </label>
                 <input
                   type="text"
-                  value={user.ghanaCard}
-                  onChange={(e) => updateUserProfile({ ghanaCard: e.target.value })}
+                  value={user.nidaNumber}
+                  onChange={(e) => updateUserProfile({ nidaNumber: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"
                 />
               </div>
@@ -594,14 +594,14 @@ export const AccountPage: React.FC = () => {
                     {item.name} × {item.quantity}
                   </span>
                   <span className="font-bold">
-                    {formatPrice(item.priceGHS * item.quantity)}
+                    {formatPrice(item.priceTZS * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
             <div className="flex justify-between font-display font-extrabold text-lg">
               <span>Total Paid</span>
-              <span>{formatPrice(invoiceOrder.totalGHS)}</span>
+              <span>{formatPrice(invoiceOrder.totalTZS)}</span>
             </div>
             <button
               onClick={() => {

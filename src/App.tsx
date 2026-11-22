@@ -8,6 +8,7 @@ import { HybridCartDrawer } from './components/HybridCartDrawer';
 import { QuickViewModal } from './components/QuickViewModal';
 import { CompareModal } from './components/CompareModal';
 import { WhatsAppWidget } from './components/WhatsAppWidget';
+import { ProductRequestModal } from './components/ProductRequestModal';
 import { HomePage } from './pages/HomePage';
 import { ElectronicsPage } from './pages/ElectronicsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -63,6 +64,7 @@ export function App() {
           <Footer />
           <HybridCartDrawer />
           <QuickViewModal />
+          <ProductRequestModal />
           <CompareModal />
           <WhatsAppWidget />
         </div>

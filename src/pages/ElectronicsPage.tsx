@@ -2,8 +2,11 @@ import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Filter,
+  Globe2,
   LayoutGrid,
   List,
+  MapPin,
+  PackageSearch,
   Scale,
   SlidersHorizontal,
   Star,
@@ -12,51 +15,96 @@ import {
 import { PRODUCTS } from '../data/mockData';
 import { ProductCard } from '../components/ProductCard';
 import { useApp } from '../context/AppContext';
+import type { AvailabilityType } from '../types';
 
 const CATEGORIES = [
   'All',
   'Smartphones',
-  'TVs & Audio',
-  'Home Appliances',
-  'Laptops & Accessories',
+  'Mobile Phone Accessories',
+  'Smart Gadgets & Wearables',
+  'Computers & Electronics',
 ];
-const BRANDS = ['All', 'Samsung', 'Apple', 'LG', 'Hisense', 'Anker', 'Sony'];
+
+const BRANDS = [
+  'All',
+  'Apple',
+  'Google',
+  'Samsung',
+  'Xiaomi / Redmi',
+  'OnePlus',
+  'Tecno',
+  'Infinix',
+  'Oppo',
+  'Anker',
+  'Sony',
+  'JBL',
+  'Logitech',
+  'SanDisk',
+];
 
 export const ElectronicsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCat = searchParams.get('cat') || 'All';
 
-  const [selectedCategory, setSelectedCategory] = useState(initialCat);
+  const [selectedCategory, setSelectedCategory] = useState(
+    CATEGORIES.includes(initialCat) ? initialCat : 'All'
+  );
   const [selectedBrand, setSelectedBrand] = useState('All');
-  const [maxPrice, setMaxPrice] = useState(25000);
+  const [selectedAvailability, setSelectedAvailability] = useState<
+    'all' | AvailabilityType
+  >('all');
+  const [maxPrice, setMaxPrice] = useState(4000000);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating'>('featured');
+  const [sortBy, setSortBy] = useState<
+    'featured' | 'price-asc' | 'price-desc' | 'rating'
+  >('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  const { compareIds, setIsCompareOpen, clearCompare, formatPrice } = useApp();
+  const {
+    compareIds,
+    setIsCompareOpen,
+    clearCompare,
+    formatPrice,
+    openProductRequestModal,
+  } = useApp();
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
-      if (selectedCategory !== 'All' && p.category !== selectedCategory) return false;
+      if (selectedCategory !== 'All' && p.category !== selectedCategory)
+        return false;
       if (selectedBrand !== 'All' && p.brand !== selectedBrand) return false;
-      if (p.priceGHS > maxPrice) return false;
+      if (
+        selectedAvailability !== 'all' &&
+        p.availability !== selectedAvailability
+      )
+        return false;
+      if (p.priceTZS > maxPrice) return false;
       if (inStockOnly && !p.inStock) return false;
       if (p.rating < minRating) return false;
       return true;
     }).sort((a, b) => {
-      if (sortBy === 'price-asc') return a.priceGHS - b.priceGHS;
-      if (sortBy === 'price-desc') return b.priceGHS - a.priceGHS;
+      if (sortBy === 'price-asc') return a.priceTZS - b.priceTZS;
+      if (sortBy === 'price-desc') return b.priceTZS - a.priceTZS;
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0;
     });
-  }, [selectedCategory, selectedBrand, maxPrice, inStockOnly, minRating, sortBy]);
+  }, [
+    selectedCategory,
+    selectedBrand,
+    selectedAvailability,
+    maxPrice,
+    inStockOnly,
+    minRating,
+    sortBy,
+  ]);
 
   const resetFilters = () => {
     setSelectedCategory('All');
     setSelectedBrand('All');
-    setMaxPrice(25000);
+    setSelectedAvailability('all');
+    setMaxPrice(4000000);
     setInStockOnly(false);
     setMinRating(0);
     setSearchParams({});
@@ -75,6 +123,34 @@ export const ElectronicsPage: React.FC = () => {
         >
           Reset All
         </button>
+      </div>
+
+      {/* Sourcing / Availability */}
+      <div>
+        <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">
+          Availability &amp; Sourcing
+        </div>
+        <div className="space-y-1.5">
+          {[
+            { id: 'all', label: 'All Products' },
+            { id: 'local_tanzania', label: 'Available Locally (Tanzania)' },
+            { id: 'dubai_order', label: 'On Order (Dubai Sourcing)' },
+          ].map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() =>
+                setSelectedAvailability(opt.id as 'all' | AvailabilityType)
+              }
+              className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                selectedAvailability === opt.id
+                  ? 'bg-slate-900 text-white'
+                  : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Category */}
@@ -109,7 +185,7 @@ export const ElectronicsPage: React.FC = () => {
             <button
               key={brand}
               onClick={() => setSelectedBrand(brand)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border cursor-pointer ${
                 selectedBrand === brand
                   ? 'border-blue-600 bg-blue-50 text-blue-700'
                   : 'border-slate-200 text-slate-600 hover:border-slate-300'
@@ -127,13 +203,15 @@ export const ElectronicsPage: React.FC = () => {
           <span className="font-bold uppercase tracking-wider text-slate-500">
             Max Price
           </span>
-          <span className="font-bold text-slate-900">{formatPrice(maxPrice)}</span>
+          <span className="font-bold text-slate-900">
+            {formatPrice(maxPrice)}
+          </span>
         </div>
         <input
           type="range"
-          min={3000}
-          max={25000}
-          step={500}
+          min={40000}
+          max={4000000}
+          step={50000}
           value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
           className="w-full accent-blue-600 cursor-pointer"
@@ -172,7 +250,7 @@ export const ElectronicsPage: React.FC = () => {
       {/* In-Stock */}
       <label className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
         <span className="text-xs font-semibold text-slate-800">
-          In-Stock Items Only
+          Available Now Only
         </span>
         <input
           type="checkbox"
@@ -187,22 +265,37 @@ export const ElectronicsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Header Banner */}
-      <div className="bg-linear-to-r from-slate-900 to-blue-950 text-white rounded-3xl p-6 sm:p-8 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="bg-linear-to-r from-slate-900 via-slate-900 to-blue-950 text-white rounded-3xl p-6 sm:p-8 mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        <div className="max-w-2xl">
           <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
-            Shema Electronics Store
+            Shema Electronics &amp; Technology Products
           </span>
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl mt-1">
-            Authentic Gadgets &amp; Home Appliances
+            Smartphones, Accessories, Wearables &amp; Computers
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1">
-            Official manufacturer warranty · Same-day delivery in Accra &amp; Tema
+          <p className="text-xs sm:text-sm text-slate-300 mt-1.5">
+            Tanzanian business with direct procurement in Dubai, UAE. When you order a phone or laptop on order, we purchase it for you in Dubai and deliver it to you in Tanzania.
           </p>
+          <div className="flex flex-wrap gap-2 mt-3 text-[11px]">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">
+              <MapPin className="w-3 h-3" /> Local Stock in Tanzania
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 font-semibold">
+              <Globe2 className="w-3 h-3" /> Ordered for You in Dubai → Delivered to Tanzania
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => openProductRequestModal({ mode: 'request' })}
+            className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg cursor-pointer"
+          >
+            <PackageSearch className="w-4 h-4" />
+            <span>Request a Product / Custom Specs</span>
+          </button>
           <button
             onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 text-white text-xs font-semibold cursor-pointer"
+            className="lg:hidden inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 text-white text-xs font-semibold cursor-pointer"
           >
             <SlidersHorizontal className="w-4 h-4" />
             Filters
@@ -236,11 +329,14 @@ export const ElectronicsPage: React.FC = () => {
         )}
 
         {/* Main Product Area */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 space-y-6">
           {/* Toolbar */}
-          <div className="bg-white rounded-2xl border border-slate-200 px-4 py-3 mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white rounded-2xl border border-slate-200 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div className="text-xs sm:text-sm text-slate-600">
-              Showing <span className="font-bold text-slate-900">{filteredProducts.length}</span>{' '}
+              Showing{' '}
+              <span className="font-bold text-slate-900">
+                {filteredProducts.length}
+              </span>{' '}
               products
             </div>
 
@@ -284,16 +380,24 @@ export const ElectronicsPage: React.FC = () => {
           </div>
 
           {filteredProducts.length === 0 ? (
-            <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center">
-              <p className="text-slate-600 font-medium mb-3">
-                No electronics matched your current filter selection.
+            <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3">
+              <p className="text-slate-600 font-medium">
+                No listed products matched your current filter selection.
               </p>
-              <button
-                onClick={resetFilters}
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold cursor-pointer"
-              >
-                Reset Filters
-              </button>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button
+                  onClick={resetFilters}
+                  className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+                <button
+                  onClick={() => openProductRequestModal({ mode: 'request' })}
+                  className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold cursor-pointer"
+                >
+                  Request Unlisted Product
+                </button>
+              </div>
             </div>
           ) : viewMode === 'grid' ? (
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -308,6 +412,25 @@ export const ElectronicsPage: React.FC = () => {
               ))}
             </div>
           )}
+
+          {/* Unlisted Product / Custom Spec Request Banner */}
+          <div className="bg-linear-to-r from-blue-50 to-slate-50 border border-blue-200 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-display font-bold text-lg text-slate-900">
+                Looking for a specific phone model, storage, colour, or unlisted product?
+              </h3>
+              <p className="text-xs text-slate-600 mt-1">
+                We source smartphones, laptops, and electronics directly from Dubai, UAE and international markets. Request any model and we&apos;ll confirm price &amp; availability before finalising your order.
+              </p>
+            </div>
+            <button
+              onClick={() => openProductRequestModal({ mode: 'request' })}
+              className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shrink-0 inline-flex items-center gap-2 cursor-pointer"
+            >
+              <PackageSearch className="w-4 h-4" />
+              <span>Request a Product</span>
+            </button>
+          </div>
         </div>
       </div>
 

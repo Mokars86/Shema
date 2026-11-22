@@ -27,8 +27,8 @@ export const CheckoutPage: React.FC = () => {
     addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || ''
   );
   const [paymentMethod, setPaymentMethod] = useState<
-    'MTN Mobile Money' | 'Telecel Cash' | 'AirtelTigo Money' | 'Visa / Mastercard'
-  >('MTN Mobile Money');
+    'M-Pesa Tanzania' | 'Tigo Pesa / Mixx' | 'Airtel Money' | 'Visa / Mastercard'
+  >('M-Pesa Tanzania');
   const [momoPhone, setMomoPhone] = useState(user.phone);
   const [confirmation, setConfirmation] = useState<{
     newOrderId?: string;
@@ -44,9 +44,9 @@ export const CheckoutPage: React.FC = () => {
     return true;
   });
 
-  const activeTotalGHS = activeItems.reduce((sum, item) => {
-    if (item.type === 'product') return sum + item.product.priceGHS * item.quantity;
-    return sum + item.service.serviceFeeGHS + item.service.govtFeeGHS;
+  const activeTotalTZS = activeItems.reduce((sum, item) => {
+    if (item.type === 'product') return sum + item.product.priceTZS * item.quantity;
+    return sum + item.service.serviceFeeTZS + item.service.govtFeeTZS;
   }, 0);
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId);
@@ -56,7 +56,7 @@ export const CheckoutPage: React.FC = () => {
     if (activeItems.length === 0) return;
     const addrString = selectedAddress
       ? `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.region}`
-      : 'Accra Central Pickup';
+      : 'Dar es Salaam Office Pickup';
 
     const result = placeHybridOrder({
       paymentMethod,
@@ -252,9 +252,9 @@ export const CheckoutPage: React.FC = () => {
             <div className="grid sm:grid-cols-2 gap-3">
               {(
                 [
-                  { name: 'MTN Mobile Money', tag: 'Instant MoMo Prompt' },
-                  { name: 'Telecel Cash', tag: 'Vodafone / Telecel' },
-                  { name: 'AirtelTigo Money', tag: 'AT Money' },
+                  { name: 'M-Pesa Tanzania', tag: 'Vodacom M-Pesa' },
+                  { name: 'Tigo Pesa / Mixx', tag: 'Mixx by Yas' },
+                  { name: 'Airtel Money', tag: 'Airtel Tanzania' },
                   { name: 'Visa / Mastercard', tag: '3D Secure Card' },
                 ] as const
               ).map((m) => (
@@ -342,7 +342,7 @@ export const CheckoutPage: React.FC = () => {
                     </div>
                   </div>
                   <span className="font-bold text-slate-900 shrink-0">
-                    {formatPrice(item.product.priceGHS * item.quantity)}
+                    {formatPrice(item.product.priceTZS * item.quantity)}
                   </span>
                 </div>
               ) : (
@@ -362,7 +362,7 @@ export const CheckoutPage: React.FC = () => {
                     </div>
                   </div>
                   <span className="font-bold text-slate-900 shrink-0">
-                    {formatPrice(item.service.serviceFeeGHS + item.service.govtFeeGHS)}
+                    {formatPrice(item.service.serviceFeeTZS + item.service.govtFeeTZS)}
                   </span>
                 </div>
               )
@@ -377,7 +377,7 @@ export const CheckoutPage: React.FC = () => {
             <div className="flex justify-between items-baseline pt-2 border-t border-slate-200">
               <span className="font-bold text-slate-900">Total Payable</span>
               <span className="font-display font-extrabold text-2xl text-slate-900">
-                {formatPrice(activeTotalGHS)}
+                {formatPrice(activeTotalTZS)}
               </span>
             </div>
           </div>
@@ -387,7 +387,7 @@ export const CheckoutPage: React.FC = () => {
             className="w-full py-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer"
           >
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Pay {formatPrice(activeTotalGHS)} Securely</span>
+            <span>Pay {formatPrice(activeTotalTZS)} Securely</span>
           </button>
         </div>
       </form>
